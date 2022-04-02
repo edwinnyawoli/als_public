@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[21],{1511:function(t,e,n){"use strict";n.r(e);var l={layout:"app"},c=n(68),component=Object(c.a)(l,(function(){var t=this.$createElement,e=this._self._c||t;return e("a-layout",{staticStyle:{height:"100%",padding:"12px"}},[e("a-card",{staticStyle:{height:"100%"}})],1)}),[],!1,null,null,null);e.default=component.exports}}]);
