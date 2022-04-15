@@ -1,0 +1,125 @@
+<div class="main-content">
+  <h2><a name=""></a></h2>
+  <p>This is the  API</p>
+
+  <h2><a name="deleteSubmission"></a>deleteSubmission</h2>
+  <hr>
+  <p></p>
+  <p>Delete a submission. A submission can only be deleted if it&#39;s pending review or rejected</p>
+  <h3 class="section">URL</h3>
+  <code>http://localhost:3000/api/submissions/{submissionId}</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>DELETE</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model=""><a href=""></a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+	  <li class="parameter">
+      
+      
+      <span class="param-in">Path: </span>
+      
+      
+      <span class="param-name">submissionId</span>
+      <span class="param-type">String</span>
+      
+      <p class="param-description"></p>
+	  </li>
+  </ul>
+  <h2><a name="getSubmissionWithId"></a>getSubmissionWithId</h2>
+  <hr>
+  <p></p>
+  <p>Get details of a submission by its id  </p>
+  <h3 class="section">URL</h3>
+  <code>http://localhost:3000/api/submissions/{submissionId}</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>GET</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model="Library"><a href="">Library</a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+	  <li class="parameter">
+      
+      
+      <span class="param-in">Path: </span>
+      
+      
+      <span class="param-name">submissionId</span>
+      <span class="param-type">String</span>
+      
+      <p class="param-description"></p>
+	  </li>
+  </ul>
+  <h2><a name="getSubmissions"></a>getSubmissions</h2>
+  <hr>
+  <p></p>
+  <p>This returns all the library submissions of the logged in user.</p>
+  <h3 class="section">URL</h3>
+  <code>http://localhost:3000/api/submissions</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>GET</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model="Submission"><a href="">List</a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+  </ul>
+  <h2><a name="saveNewSubmission"></a>saveNewSubmission</h2>
+  <hr>
+  <p></p>
+  <p>This creates a new library submission for review. The created library submission automatically goes into the PENDING_REVIEW state.</p>
+  <h3 class="section">URL</h3>
+  <code>http://localhost:3000/api/submissions</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>POST</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model=""><a href=""></a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+	  <li class="parameter">
+      
+      
+      
+      
+      <span class="param-in">Body: </span>
+      <span class="param-name">Library</span>
+      <span class="param-type">Library(Library)</span>
+      
+      <p class="param-description"></p>
+	  </li>
+  </ul>
+  <h2><a name="updateSubmission"></a>updateSubmission</h2>
+  <hr>
+  <p></p>
+  <p>Update a submission with more information after an administrator has reviewed it and requested more information (The submission status is PENDING_FURTHER_INFO)</p>
+  <h3 class="section">URL</h3>
+  <code>http://localhost:3000/api/submissions/{submissionId}</code>
+  <h3 class="section">HTTP Method</h3>
+  <code>PUT</code>
+  <h3 class="section">Response Type</h3>
+  <div class="model" data-model=""><a href=""></a></div>
+  <h3 class="section">Parameters</h3>
+  <ul>
+	  <li class="parameter">
+      
+      
+      <span class="param-in">Path: </span>
+      
+      
+      <span class="param-name">submissionId</span>
+      <span class="param-type">String</span>
+      
+      <p class="param-description"></p>
+	  </li>
+	  <li class="parameter">
+      
+      
+      
+      
+      <span class="param-in">Body: </span>
+      <span class="param-name">Library</span>
+      <span class="param-type">Library(Library)</span>
+      
+      <p class="param-description"></p>
+	  </li>
+  </ul>
+</div>
