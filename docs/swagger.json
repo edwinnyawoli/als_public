@@ -1,0 +1,933 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "contact" : {
+      "email" : "help@africanlibrarysites.org",
+      "url" : "www.africanlibrarysites.org/support"
+    },
+    "description" : "## Welcome to African Library Sites Api\nAll of ALS's APIs are organized around REST. If you’ve used RESTful APIs before, many of the concepts here will be familiar to you. Each resource has a unique URL, and HTTP verbs are used to specify actions you want to perform on each resource. All request and response bodies, including errors, are encoded in JSON, unless a different format is requested. \n\nHere's what you can do with these APIs - \n- Create user accounts to create and access protected resources\n- Retrieve the list of available libraries, their images and activity logs\n- Create, update and delete* submitted library information\n- Retrieve library statistics to be displayed as is or on a chart\n- ...",
+    "termsOfService" : "www.africanlibrarysites.org/terms",
+    "title" : "African Library Sites Api",
+    "version" : "1.0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:3000"
+  } ],
+  "paths" : {
+    "/api/auth/user" : {
+      "get" : {
+        "description" : "Get logged in user",
+        "operationId" : "get-user",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "examples" : {
+                  "example-1" : {
+                    "value" : {
+                      "id" : 142,
+                      "firstName" : "Alice",
+                      "lastName" : "Smith",
+                      "email" : "alice.smith@gmail.com",
+                      "dateOfBirth" : "1997-10-31",
+                      "emailVerified" : true,
+                      "signUpDate" : "2019-08-24"
+                    }
+                  }
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/User"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "API_Bearer_Token" : [ ]
+        } ],
+        "summary" : "Get currenct logged in user",
+        "tags" : [ "Authentication" ]
+      }
+    },
+    "/api/auth/register" : {
+      "post" : {
+        "description" : "Register a new user",
+        "operationId" : "register-new-user",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "examples" : {
+                "example-1" : {
+                  "value" : {
+                    "firstName" : "John",
+                    "lastName" : "Doe",
+                    "email" : "john.doe@abc.com",
+                    "password" : "strong_password"
+                  }
+                }
+              },
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterationForm"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created"
+          }
+        },
+        "summary" : "Register a new user",
+        "tags" : [ "Authentication" ]
+      }
+    },
+    "/api/auth/login" : {
+      "post" : {
+        "description" : "Log a user in",
+        "operationId" : "login",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "examples" : {
+                "example-1" : {
+                  "value" : {
+                    "email" : "user@example.com",
+                    "password" : "strong_password"
+                  }
+                }
+              },
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginCredentials"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200"
+                }
+              }
+            },
+            "description" : "Response returned for authentication requests"
+          }
+        },
+        "summary" : "Log user in",
+        "tags" : [ "Authentication" ]
+      }
+    },
+    "/api/auth/logout" : {
+      "post" : {
+        "description" : "Log user out",
+        "operationId" : "logout",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "API_Bearer_Token" : [ ]
+        } ],
+        "summary" : "Logout",
+        "tags" : [ "Authentication" ]
+      }
+    },
+    "/api/libraries" : {
+      "get" : {
+        "description" : "Get libraries",
+        "operationId" : "get-libraries",
+        "parameters" : [ {
+          "description" : "Type of library",
+          "explode" : true,
+          "in" : "query",
+          "name" : "type",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "PUBLIC", "COMMUNITY", "NATIONAL", "OTHER", "ACADEMIC" ],
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "description" : "The format of the response body",
+          "explode" : true,
+          "in" : "query",
+          "name" : "format",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "JSON", "CSV" ],
+            "type" : "string"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "examples" : {
+                  "example-1" : {
+                    "value" : [ {
+                      "id" : "32fsdf2saadaoff",
+                      "name" : "Test Public Library",
+                      "type" : "PUBLIC",
+                      "otherLibraryType" : "",
+                      "streetAddress" : "123 Test Street",
+                      "communityOrTown" : "Ephemeral Town",
+                      "country" : "Latvia",
+                      "coordinates" : {
+                        "latitude" : 0.4321,
+                        "longitude" : 0.55121
+                      },
+                      "contact" : {
+                        "name" : "Jane Doe",
+                        "email" : "jane.doe@xyz.com"
+                      }
+                    } ]
+                  }
+                },
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/Library"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get list of available libraries",
+        "tags" : [ "Libraries" ]
+      }
+    },
+    "/api/libraries/{libraryId}/images" : {
+      "get" : {
+        "description" : "Get images of library. Returns an array or urls of these images",
+        "operationId" : "get-library-images",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "libraryId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "examples" : {
+                  "example-1" : {
+                    "value" : [ "https://www.africanlibrarysites.org/images/12312dasd032jda.jpeg", "https://www.africanlibrarysites.org/images/fgh54fs232ssq.jpeg" ]
+                  }
+                },
+                "schema" : {
+                  "items" : {
+                    "type" : "string"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get images of a library",
+        "tags" : [ "Libraries" ]
+      }
+    },
+    "/api/libraries/{libraryId}/logs" : {
+      "get" : {
+        "description" : "Get activity logs for a library",
+        "operationId" : "get-library-logs",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "libraryId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "examples" : {
+                  "example-1" : {
+                    "value" : [ { } ]
+                  }
+                },
+                "schema" : {
+                  "items" : {
+                    "type" : "object"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get logs of a library",
+        "tags" : [ "Libraries" ]
+      }
+    },
+    "/api/submissions" : {
+      "get" : {
+        "description" : "This returns all the library submissions of the logged in user.",
+        "operationId" : "get-submissions",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "examples" : {
+                  "example-1" : {
+                    "value" : [ {
+                      "id" : "dajd2ej1lsn1nd",
+                      "library" : {
+                        "id" : "dajd2ej1lsn1nd",
+                        "name" : "New Test Library",
+                        "type" : "PUBLIC",
+                        "otherLibraryType" : "",
+                        "streetAddress" : "123 Baker Street",
+                        "communityOrTown" : "Accra",
+                        "country" : "Ghana",
+                        "coordinates" : {
+                          "latitude" : 0.4321,
+                          "longitude" : 0.9876
+                        },
+                        "contact" : {
+                          "name" : "Ama Anane",
+                          "email" : "ama.anane@xyz.com"
+                        }
+                      },
+                      "status" : "PENDING_REVIEW",
+                      "createdAt" : "01-04-2022",
+                      "updatedAt" : "01-04-2022",
+                      "comments" : [ "string" ]
+                    } ]
+                  }
+                },
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/Submission"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "API_Bearer_Token" : [ ]
+        } ],
+        "summary" : "Get user's library submissions",
+        "tags" : [ "Submissions" ]
+      },
+      "post" : {
+        "description" : "This creates a new library submission for review. The created library submission automatically goes into the PENDING_REVIEW state.",
+        "operationId" : "save-new-submission",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Library"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "API_Bearer_Token" : [ ]
+        } ],
+        "summary" : "Submit library information",
+        "tags" : [ "Submissions" ]
+      }
+    },
+    "/api/submissions/{submissionId}" : {
+      "delete" : {
+        "description" : "Delete a submission. A submission can only be deleted if it's pending review or rejected",
+        "operationId" : "delete-submission",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "submissionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete library submission",
+        "tags" : [ "Submissions" ]
+      },
+      "get" : {
+        "description" : "Get details of a submission by its id  ",
+        "operationId" : "get-submission-with-id",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "submissionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Library"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get details of a library submission",
+        "tags" : [ "Submissions" ]
+      },
+      "put" : {
+        "description" : "Update a submission with more information after an administrator has reviewed it and requested more information (The submission status is PENDING_FURTHER_INFO)",
+        "operationId" : "update-submission",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "submissionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Library"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "API_Bearer_Token" : [ ]
+        } ],
+        "summary" : "Edit a library submission",
+        "tags" : [ "Submissions" ]
+      }
+    },
+    "/api/charts/libraries" : {
+      "get" : {
+        "description" : "Get chart data on libraries",
+        "operationId" : "get-library-chart",
+        "parameters" : [ {
+          "description" : "Array of countries to filter by. Countries are specified using their alpha-2-code. Absence represents all countries.",
+          "explode" : true,
+          "in" : "query",
+          "name" : "countries",
+          "required" : false,
+          "schema" : {
+            "type" : "array"
+          },
+          "style" : "form"
+        }, {
+          "description" : "Custom library type when OTHER is specified as type",
+          "explode" : true,
+          "in" : "query",
+          "name" : "otherLibraryType",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "description" : "Type of library",
+          "explode" : true,
+          "in" : "query",
+          "name" : "type",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "PUBLIC", "COMMUNITY", "NATIONAL", "OTHER", "ACADEMIC" ],
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "description" : "Status of library",
+          "explode" : true,
+          "in" : "query",
+          "name" : "status",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "APPROVED", "PENDING_APPROVAL", "REJECTED" ],
+            "type" : "string"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LibraryChart"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get library chart data",
+        "tags" : [ "Charts" ]
+      }
+    },
+    "/api/charts/overview" : {
+      "get" : {
+        "description" : "Get overview of library chart data",
+        "operationId" : "get-library-chart-overview",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "examples" : {
+                  "example-1" : {
+                    "value" : {
+                      "data" : [ {
+                        "all" : 44,
+                        "approved" : 20,
+                        "rejected" : 14,
+                        "pendingApproval" : 10,
+                        "type" : ""
+                      }, {
+                        "all" : 8,
+                        "approved" : 4,
+                        "rejected" : 4,
+                        "pendingApproval" : 0,
+                        "type" : "PUBLIC"
+                      }, {
+                        "all" : 12,
+                        "approved" : 8,
+                        "rejected" : 2,
+                        "pendingApproval" : 2,
+                        "type" : "COMMUNITY"
+                      }, {
+                        "all" : 14,
+                        "approved" : 4,
+                        "rejected" : 5,
+                        "pendingApproval" : 5,
+                        "type" : "NATIONAL"
+                      }, {
+                        "all" : 5,
+                        "approved" : 2,
+                        "rejected" : 0,
+                        "pendingApproval" : 3,
+                        "type" : "ACADEMIC"
+                      }, {
+                        "all" : 5,
+                        "approved" : 2,
+                        "rejected" : 3,
+                        "pendingApproval" : 0,
+                        "type" : "OTHER"
+                      } ]
+                    }
+                  }
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/LibraryChartOverview"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get overview of library statistics",
+        "tags" : [ "Charts" ]
+      }
+    }
+  },
+  "components" : {
+    "parameters" : {
+      "LibraryTypeQueryParam" : {
+        "description" : "Type of library",
+        "explode" : true,
+        "in" : "query",
+        "name" : "type",
+        "required" : false,
+        "schema" : {
+          "enum" : [ "PUBLIC", "COMMUNITY", "NATIONAL", "OTHER", "ACADEMIC" ],
+          "type" : "string"
+        },
+        "style" : "form"
+      },
+      "ResponseFormat" : {
+        "description" : "The format of the response body",
+        "explode" : true,
+        "in" : "query",
+        "name" : "format",
+        "required" : false,
+        "schema" : {
+          "enum" : [ "JSON", "CSV" ],
+          "type" : "string"
+        },
+        "style" : "form"
+      },
+      "LibraryStatusQueryParam" : {
+        "description" : "Status of library",
+        "explode" : true,
+        "in" : "query",
+        "name" : "status",
+        "required" : false,
+        "schema" : {
+          "enum" : [ "APPROVED", "PENDING_APPROVAL", "REJECTED" ],
+          "type" : "string"
+        },
+        "style" : "form"
+      }
+    },
+    "responses" : {
+      "TokenResponse" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_response_200"
+            }
+          }
+        },
+        "description" : "Response returned for authentication requests"
+      },
+      "PaginatedResponse" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "properties" : {
+                "id" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "description" : "Example response"
+      }
+    },
+    "schemas" : {
+      "User" : {
+        "description" : "A user is anyone who has registered and has access to the ALVA system",
+        "properties" : {
+          "id" : {
+            "description" : "Unique identifier for the given user.",
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "email" : {
+            "format" : "email",
+            "type" : "string"
+          },
+          "verified" : {
+            "description" : "Set to true if the user's email has been verified.",
+            "type" : "boolean"
+          },
+          "createdAt" : {
+            "description" : "The date that the user was created.",
+            "format" : "date",
+            "type" : "string"
+          }
+        },
+        "required" : [ "email", "firstName", "id", "lastName", "verified" ],
+        "title" : "User",
+        "type" : "object",
+        "x-tags" : [ "Authentication" ]
+      },
+      "RegisterationForm" : {
+        "description" : "The information required to register to become a user of the ALVA system",
+        "properties" : {
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          }
+        },
+        "title" : "RegisterationForm",
+        "type" : "object",
+        "x-tags" : [ "Authentication" ]
+      },
+      "LoginCredentials" : {
+        "description" : "Authentication information required to log into your account",
+        "properties" : {
+          "email" : {
+            "format" : "email",
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "email", "password" ],
+        "title" : "LoginCredentials",
+        "type" : "object",
+        "x-tags" : [ "Authentication" ]
+      },
+      "Library" : {
+        "description" : "Contains information about a library that is visible to all users of the ALVA system",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/LibraryType"
+          },
+          "otherLibraryType" : {
+            "type" : "string"
+          },
+          "streetAddress" : {
+            "type" : "string"
+          },
+          "communityOrTown" : {
+            "type" : "string"
+          },
+          "country" : {
+            "description" : "The alpha-2-code of a country",
+            "type" : "string"
+          },
+          "coordinates" : {
+            "$ref" : "#/components/schemas/Coordinates"
+          },
+          "contact" : {
+            "$ref" : "#/components/schemas/Contact"
+          }
+        },
+        "title" : "Library",
+        "type" : "object"
+      },
+      "Submission" : {
+        "description" : "A submission contains information that a user wants to contribute about a library. Once a submission has been approved, it becomes visible to all users of the ALVA system",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "library" : {
+            "$ref" : "#/components/schemas/Library"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/SubmissionStatus"
+          },
+          "createdAt" : {
+            "type" : "string"
+          },
+          "updatedAt" : {
+            "type" : "string"
+          },
+          "comments" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        },
+        "title" : "Submission",
+        "type" : "object"
+      },
+      "LibraryType" : {
+        "description" : "An enumeration of types of libraries",
+        "enum" : [ "PUBLIC", "COMMUNITY", "NATIONAL", "OTHER", "ACADEMIC" ],
+        "title" : "LibraryType",
+        "type" : "string"
+      },
+      "Coordinates" : {
+        "description" : "The coordinates of a library",
+        "properties" : {
+          "latitude" : {
+            "type" : "number"
+          },
+          "longitude" : {
+            "type" : "number"
+          }
+        },
+        "title" : "Coordinates",
+        "type" : "object"
+      },
+      "Contact" : {
+        "description" : "Contact information of a person associated with a library",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          }
+        },
+        "title" : "Contact",
+        "type" : "object"
+      },
+      "SubmissionStatus" : {
+        "description" : "The status of a library submission",
+        "enum" : [ "APPROVED", "REJECTED", "PENDING_REVIEW", "PENDING_FURTHER_INFO" ],
+        "title" : "SubmissionStatus",
+        "type" : "string"
+      },
+      "LibraryChartOverview" : {
+        "description" : "The overview of library chart data",
+        "properties" : {
+          "data" : {
+            "items" : {
+              "$ref" : "#/components/schemas/OverviewStat"
+            },
+            "type" : "array"
+          }
+        },
+        "title" : "LibraryChartOverview",
+        "type" : "object"
+      },
+      "OverviewStat" : {
+        "description" : "The total number of libraries, including a break down by status. Where type is non null, these values represent totals of that particular type of library. ",
+        "properties" : {
+          "all" : {
+            "type" : "integer"
+          },
+          "approved" : {
+            "type" : "integer"
+          },
+          "rejected" : {
+            "type" : "integer"
+          },
+          "pendingApproval" : {
+            "type" : "integer"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/LibraryType"
+          }
+        },
+        "title" : "OverviewStat",
+        "type" : "object"
+      },
+      "CountryChartData" : {
+        "description" : "The totals of libraries in a particular country",
+        "properties" : {
+          "country" : {
+            "description" : "Alpha-2-code of country",
+            "type" : "string"
+          },
+          "count" : {
+            "description" : "The total number of libraries recorded for this country in the system. This includes libraries of all types and statuses.",
+            "type" : "integer"
+          },
+          "estimatedTotal" : {
+            "description" : "The estimated total number of libraries in the country as provided by an Administrator",
+            "type" : "integer"
+          },
+          "typeData" : {
+            "description" : "An array of library counts by type belonging to this country",
+            "items" : {
+              "$ref" : "#/components/schemas/TypeChartData"
+            },
+            "type" : "array"
+          },
+          "statusData" : {
+            "description" : "An array of library counts by status belonging to this country",
+            "items" : {
+              "$ref" : "#/components/schemas/StatusChartData"
+            },
+            "type" : "array"
+          }
+        },
+        "title" : "CountryChartData",
+        "type" : "object"
+      },
+      "TypeChartData" : {
+        "description" : "The total number of libraries of a particular type",
+        "properties" : {
+          "type" : {
+            "$ref" : "#/components/schemas/LibraryType"
+          },
+          "count" : {
+            "type" : "integer"
+          }
+        },
+        "title" : "TypeChartData",
+        "type" : "object"
+      },
+      "StatusChartData" : {
+        "description" : "The total number of libraries of a particular status",
+        "properties" : {
+          "status" : {
+            "$ref" : "#/components/schemas/SubmissionStatus"
+          },
+          "count" : {
+            "type" : "integer"
+          }
+        },
+        "title" : "StatusChartData",
+        "type" : "object"
+      },
+      "LibraryChart" : {
+        "description" : "Contains data about libraries that can be shown in a chart",
+        "properties" : {
+          "data" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CountryChartData"
+            },
+            "type" : "array"
+          }
+        },
+        "title" : "LibraryChart",
+        "type" : "object"
+      },
+      "inline_response_200" : {
+        "properties" : {
+          "token" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      }
+    },
+    "securitySchemes" : {
+      "API_Bearer_Token" : {
+        "description" : "Bearer token required to access protected resources",
+        "scheme" : "bearer",
+        "type" : "http"
+      }
+    }
+  }
+}
